@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Serene Touch Massage Therapy</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-brand">💆 Queen of massages</div>
+    <div class="nav-links">
+      <button class="nav-btn active" onclick="showSection('home')">Home & Services</button>
+      <button class="nav-btn" onclick="showSection('about')">About Me</button>
+      <button class="nav-btn" onclick="showSection('book')">Book Appointment</button>
+      <button class="nav-btn" onclick="showSection('my-appointments')">My Bookings</button>
+      <button class="nav-btn admin-link" onclick="showSection('admin')">Mom's Admin</button>
+    </div>
+  </nav>
+
+  <main class="container">
+    <!-- 1. Home & Services -->
+    <section id="home" class="page-section active">
+      <div class="hero">
+        <h1>Holistic Healing & Personalized Massage</h1>
+        <p>Restoring balance and relieving tension with specialized massage therapy.</p>
+        <button class="btn-primary hero-btn" onclick="showSection('book')">Book Your Session</button>
+      </div>
+
+      <h2 class="section-title">Massage Services</h2>
+      <div class="services-grid">
+        <div class="service-card">
+          <h3>Swedish Massage</h3>
+          <p class="service-meta">60 mins • Light to Medium Pressure</p>
+          <p>Gentle, flowing strokes to promote full-body relaxation and ease tension.</p>
+        </div>
+        <div class="service-card">
+          <h3>Deep Tissue Massage</h3>
+          <p class="service-meta">60 mins • Firm Pressure</p>
+          <p>Targets deep muscle layers to relieve chronic stiffness and lower back pain.</p>
+        </div>
+        <div class="service-card">
+          <h3>Hot Stone Therapy</h3>
+          <p class="service-meta">60 mins • Thermal Relaxation</p>
+          <p>Smooth heated stones to melt away stress and loosen tight muscle fibers.</p>
+        </div>
+        <div class="service-card">
+          <h3>Foot Reflexology</h3>
+          <p class="service-meta">60 mins • Targeted Acupressure</p>
+          <p>Acupressure on key reflex points of the feet for full-body relief.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. About Me -->
+    <section id="about" class="page-section">
+      <div class="card">
+        <h2>About Your Therapist</h2>
+        <div class="about-content">
+          <p>Welcome! With years of dedicated experience in therapeutic bodywork, my mission is to provide an individualized healing space for every client.</p>
+          <p>Whether you need chronic pain management or a relaxing retreat, each session is tailored specifically to your needs.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Booking Form with Dynamic Slots -->
+    <section id="book" class="page-section">
+      <div class="card">
+        <h2>Request an Appointment</h2>
+        <p class="helper-text">Pick a date to generate open time slots.</p>
+        
+        <form id="bookingForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="clientName">Full Name</label>
+              <input type="text" id="clientName" required placeholder="Jane Doe">
+            </div>
+            <div class="form-group">
+              <label for="clientPhone">Phone Number</label>
+              <input 
+  type="tel" 
+  id="clientPhone" 
+  required 
+  placeholder="1234567890"
+  maxlength="10" 
+  minlength="10"
+  pattern="[0-9]{10}"
+  title="Please enter exactly 10 digits."
+>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="serviceType">Service</label>
+            <select id="serviceType" required>
+              <option value="Swedish Massage">Swedish Massage (60 min)</option>
+              <option value="Deep Tissue Massage">Deep Tissue Massage (60 min)</option>
+              <option value="Hot Stone Therapy">Hot Stone Therapy (60 min)</option>
+              <option value="Foot Reflexology">Foot Reflexology (60 min)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="bookDate">Date</label>
+            <input type="date" id="bookDate" required onchange="renderAvailableTimeSlots(this.value)">
+          </div>
+
+          <div class="form-group">
+            <label>Available Time Slots (9:00 AM – 5:00 PM)</label>
+            <div id="availableSlots" class="slots-container">
+              <p class="helper-text">Select a date above to view open slots.</p>
+            </div>
+            <input type="hidden" id="selectedTime" required>
+          </div>
+
+          <div class="form-group">
+            <label for="notes">Special Requests / Notes</label>
+            <textarea id="notes" rows="3" placeholder="Lower back focus, medium pressure..."></textarea>
+          </div>
+
+          <button type="submit" class="btn-primary">Submit Request</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 4. Client Search -->
+    <section id="my-appointments" class="page-section">
+      <div class="card">
+        <h2>Lookup Your Appointments</h2>
+        <p class="helper-text">Enter your phone number to check your reservations.</p>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <input type="tel" id="lookupPhone" placeholder="Enter phone number">
+          </div>
+          <button type="button" class="btn-secondary" onclick="lookupAppointments()">Search</button>
+        </div>
+
+        <div id="customerResults" class="appointment-list"></div>
+      </div>
+    </section>
+
+    <!-- 5. Admin Portal -->
+    <section id="admin" class="page-section">
+      <div id="adminLoginCard" class="card">
+        <h2>Admin Authentication</h2>
+        <p class="helper-text">Default passcode: <code>mom123</code></p>
+        <div class="form-row">
+          <div class="form-group">
+            <input type="password" id="adminPass" placeholder="Enter Admin Passcode">
+          </div>
+          <button type="button" class="btn-primary" onclick="loginAdmin()">Unlock</button>
+        </div>
+      </div>
+
+      <div id="adminDashboard" class="card hidden">
+        <div class="admin-header">
+          <h2>All Client Appointments</h2>
+          <button type="button" class="btn-secondary btn-sm" onclick="logoutAdmin()">Log Out</button>
+        </div>
+        <div id="allAppointmentsList" class="appointment-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

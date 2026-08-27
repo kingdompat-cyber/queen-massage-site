@@ -1,7 +1,7 @@
 // 1. Initialize Supabase Client
 const SUPABASE_URL = "https://thmmlrxkyugdsatanlkr.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRobW1scnhreXVnZHNhdGFubGtyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc3OTg4OTYsImV4cCI6MjEwMzM3NDg5Nn0.ckxTRNO5icZh_QbsA_XnJlaNzHvDWbhNYs2hZjD_P70";
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let selectedSlotData = null;
 
@@ -29,7 +29,7 @@ async function renderAvailableTimeSlots(selectedDate) {
 
   container.innerHTML = '<p class="helper-text">Checking open slots...</p>';
 
-  const { data: dayBookings, error } = await supabase
+  const { data: dayBookings, error } = await supabaseClient
     .from("appointments")
     .select("start_minutes, end_minutes")
     .eq("date", selectedDate);
@@ -93,7 +93,7 @@ document.getElementById("bookingForm").addEventListener("submit", async (e) => {
     notes: document.getElementById("notes").value.trim()
   };
 
-  const { error } = await supabase.from("appointments").insert([newBooking]);
+  const { error } = await supabaseClient.from("appointments").insert([newBooking]);
 
   if (error) {
     alert("Error booking appointment: " + error.message);
@@ -120,7 +120,7 @@ async function lookupAppointments() {
 
   container.innerHTML = '<p class="helper-text">Searching...</p>';
 
-  const { data: userAppointments, error } = await supabase
+  const { data: userAppointments, error } = await supabaseClient
     .from("appointments")
     .select("*")
     .eq("phone", phone)
@@ -169,7 +169,7 @@ function logoutAdmin() {
 async function loadAdminAppointments() {
   const list = document.getElementById("allAppointmentsList");
   
-  const { data: records, error } = await supabase
+  const { data: records, error } = await supabaseClient
     .from("appointments")
     .select("*")
     .order("date", { ascending: true })
@@ -199,7 +199,7 @@ async function loadAdminAppointments() {
 
 async function cancelAppointment(id) {
   if (confirm("Cancel this appointment?")) {
-    const { error } = await supabase.from("appointments").delete().eq("id", id);
+    const { error } = await supabaseClient.from("appointments").delete().eq("id", id);
     if (error) {
       alert("Error deleting appointment: " + error.message);
     } else {
@@ -210,7 +210,7 @@ async function cancelAppointment(id) {
 
 // 7. Supabase Realtime Listener (Updates admin screen automatically)
 function subscribeToRealtimeChanges() {
-  supabase
+  supabaseClient
     .channel("public:appointments")
     .on(
       "postgres_changes",

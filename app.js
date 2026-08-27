@@ -1,6 +1,8 @@
 // 1. Initialize Supabase Client
-const SUPABASE_URL = "https://thmmlrxkyugdsatanlkr.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRobW1scnhreXVnZHNhdGFubGtyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc3OTg4OTYsImV4cCI6MjEwMzM3NDg5Nn0.ckxTRNO5icZh_QbsA_XnJlaNzHvDWbhNYs2hZjD_P70";
+const SUPABASE_URL = "https://YOUR_PROJECT_ID.supabase.co";
+const SUPABASE_ANON_KEY = "YOUR_ANON_PUBLIC_KEY";
+
+// Rename variable to supabaseClient so it does not conflict with window.supabase
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let selectedSlotData = null;
@@ -49,7 +51,7 @@ async function renderAvailableTimeSlots(selectedDate) {
     const slotStart = hour * 60;
     const slotEnd = slotStart + duration;
 
-    const isTaken = dayBookings.some(
+    const isTaken = dayBookings && dayBookings.some(
       (b) => slotStart < b.end_minutes && slotEnd > b.start_minutes
     );
 
@@ -208,7 +210,7 @@ async function cancelAppointment(id) {
   }
 }
 
-// 7. Supabase Realtime Listener (Updates admin screen automatically)
+// 7. Supabase Realtime Listener
 function subscribeToRealtimeChanges() {
   supabaseClient
     .channel("public:appointments")
